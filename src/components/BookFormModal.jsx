@@ -9,7 +9,7 @@ const bookFormModal = props => {
       onRequestClose={props.clearBookForm}
       ariaHideApp={false}
       closeTimeoutMS={200}
-      className="modal"
+      className="book-form-modal"
     >
       <h3>Add book</h3>
       <BookForm
@@ -19,6 +19,12 @@ const bookFormModal = props => {
         bookFormErrors={props.bookFormErrors}
         clearBookForm={props.clearBookForm}
       />
+      <button
+        className="btn-danger book-form-modal__close-modal"
+        onClick={props.clearBookForm}
+      >
+        Close
+      </button>
     </Modal>
   );
 };

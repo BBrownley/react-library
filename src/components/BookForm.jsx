@@ -46,9 +46,6 @@ const BookForm = props => {
           <h4 className="book-form__error">{props.bookFormErrors["pages"]}</h4>
         )}
         <input type="submit" value="Submit" />
-        <button className="btn-danger" onClick={props.clearBookForm}>
-          Close
-        </button>
       </form>
     </div>
   );

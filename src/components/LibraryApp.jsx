@@ -4,6 +4,7 @@ import Header from "./Header";
 import AddBook from "./AddBook";
 import Books from "./Books";
 import BookFormModal from "./BookFormModal";
+import DeleteBookModal from "./DeleteBookModal";
 
 export default class LibraryApp extends Component {
   constructor(props) {
@@ -20,12 +21,37 @@ export default class LibraryApp extends Component {
         author: undefined,
         pages: undefined
       },
-      bookFormOpen: false
+      bookFormOpen: false,
+      bookToBeDeleted: undefined
     };
     this.validateBookFormField = this.validateBookFormField.bind(this);
     this.openBookForm = this.openBookForm.bind(this);
     this.clearBookForm = this.clearBookForm.bind(this);
     this.handleBookFormSubmit = this.handleBookFormSubmit.bind(this);
+    this.editBook = this.editBook.bind(this);
+    this.deleteBook = this.deleteBook.bind(this);
+    this.clearBookToBeDeleted = this.clearBookToBeDeleted.bind(this);
+    this.confirmDeleteBook = this.confirmDeleteBook.bind(this);
+  }
+
+  componentDidMount() {
+    try {
+      const json = localStorage.getItem("books");
+      const books = JSON.parse(json);
+
+      if (books) {
+        this.setState(() => ({ books }));
+      }
+    } catch (e) {
+      console.log("Error");
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.books.length !== this.state.books.length) {
+      const json = JSON.stringify(this.state.books);
+      localStorage.setItem("books", json);
+    }
   }
 
   validateBookFormField(event) {
@@ -60,6 +86,31 @@ export default class LibraryApp extends Component {
 
   clearBookForm() {
     this.setState(() => ({ bookFormOpen: false }));
+  }
+
+  editBook(bookId) {
+    console.log(`Editing book # ${bookId}`);
+  }
+
+  deleteBook(bookIndex) {
+    console.log(`Deleting book # ${bookIndex}`);
+    this.setState(() => ({
+      bookToBeDeleted: { ...this.state.books[bookIndex], bookIndex }
+    }));
+  }
+
+  clearBookToBeDeleted() {
+    this.setState(() => ({ bookToBeDeleted: undefined }));
+  }
+
+  confirmDeleteBook(bookIndex) {
+    this.setState(prevState => {
+      return {
+        books: prevState.books.splice(bookIndex, 1),
+        bookToBeDeleted: undefined
+      };
+    });
+    // TODO: UPDATE LOCAL STORAGE
   }
 
   handleBookFormSubmit(e) {
@@ -99,7 +150,11 @@ export default class LibraryApp extends Component {
         <div className="container">
           <Header />
           <AddBook openBookForm={this.openBookForm} />
-          <Books books={this.state.books} />
+          <Books
+            books={this.state.books}
+            editBook={this.editBook}
+            deleteBook={this.deleteBook}
+          />
         </div>
         <BookFormModal
           bookFormData={this.state.bookFormData}
@@ -108,6 +163,11 @@ export default class LibraryApp extends Component {
           handleBookFormSubmit={this.handleBookFormSubmit}
           bookFormOpen={this.state.bookFormOpen}
           clearBookForm={this.clearBookForm}
+        />
+        <DeleteBookModal
+          bookToBeDeleted={this.state.bookToBeDeleted}
+          clearBookToBeDeleted={this.clearBookToBeDeleted}
+          confirmDeleteBook={this.confirmDeleteBook}
         />
       </div>
     );
