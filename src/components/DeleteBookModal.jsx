@@ -21,12 +21,7 @@ const DeleteBookModal = props => {
           >
             No
           </button>
-          <button
-            className="btn"
-            onClick={e => {
-              props.confirmDeleteBook(props.bookId);
-            }}
-          >
+          <button className="btn" onClick={props.confirmDeleteBook}>
             Yes
           </button>
         </div>

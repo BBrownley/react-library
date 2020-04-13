@@ -103,10 +103,14 @@ export default class LibraryApp extends Component {
     this.setState(() => ({ bookToBeDeleted: undefined }));
   }
 
-  confirmDeleteBook(bookIndex) {
+  confirmDeleteBook() {
+    const removeBookIndex = this.state.bookToBeDeleted.bookIndex;
+    const updatedBooks = this.state.books.map(book => book);
+    updatedBooks.splice(removeBookIndex, 1);
+
     this.setState(prevState => {
       return {
-        books: prevState.books.splice(bookIndex, 1),
+        books: updatedBooks,
         bookToBeDeleted: undefined
       };
     });
