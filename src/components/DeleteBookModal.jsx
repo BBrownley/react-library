@@ -5,7 +5,7 @@ const DeleteBookModal = props => {
   return (
     <Modal
       isOpen={!!props.bookToBeDeleted}
-      onRequestClose={props.clearDeleteBook}
+      onRequestClose={props.clearBookToBeDeleted}
       ariaHideApp={false}
       closeTimeoutMS={200}
       className="delete-book-modal"

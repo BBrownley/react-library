@@ -11,7 +11,7 @@ const bookFormModal = props => {
       closeTimeoutMS={200}
       className="book-form-modal"
     >
-      <h3>Add book</h3>
+      <h3>{props.bookToBeEdited ? "Edit" : "Add"} book</h3>
       <BookForm
         handleBookFormSubmit={props.handleBookFormSubmit}
         validateBookFormField={props.validateBookFormField}

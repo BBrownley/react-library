@@ -22,6 +22,7 @@ export default class LibraryApp extends Component {
         pages: undefined
       },
       bookFormOpen: false,
+      bookToBeEdited: undefined,
       bookToBeDeleted: undefined
     };
     this.validateBookFormField = this.validateBookFormField.bind(this);
@@ -81,15 +82,41 @@ export default class LibraryApp extends Component {
   }
 
   openBookForm() {
-    this.setState(() => ({ bookFormOpen: true }));
+    this.setState(() => ({
+      bookFormOpen: true,
+      bookFormData: {
+        bookTitle: "",
+        author: "",
+        pages: ""
+      },
+      bookFormErrors: {
+        bookTitle: undefined,
+        author: undefined,
+        pages: undefined
+      },
+      bookToBeEdited: undefined
+    }));
   }
 
   clearBookForm() {
     this.setState(() => ({ bookFormOpen: false }));
   }
 
-  editBook(bookId) {
-    console.log(`Editing book # ${bookId}`);
+  editBook(bookIndex) {
+    console.log(`Editing book # ${bookIndex}`);
+
+    const bookFormData = Object.assign({}, this.state.books[bookIndex]);
+
+    this.setState(() => ({
+      bookFormOpen: true,
+      bookToBeEdited: { ...this.state.books[bookIndex], bookIndex },
+      bookFormData,
+      bookFormErrors: {
+        bookTitle: undefined,
+        author: undefined,
+        pages: undefined
+      }
+    }));
   }
 
   deleteBook(bookIndex) {
@@ -133,16 +160,31 @@ export default class LibraryApp extends Component {
       return val.length > 0;
     });
 
+    console.log(Book);
+
     if (allFieldsFilled) {
       this.setState(prevState => {
+        let books;
+
+        if (prevState.bookToBeEdited) {
+          const editBookIndex = prevState.bookToBeEdited.bookIndex;
+
+          books = [...prevState.books];
+          books[editBookIndex] = Book;
+          console.log(books);
+        } else {
+          books = [...prevState.books, Book];
+        }
+
         return {
           bookFormOpen: false,
-          books: prevState.books.concat(Book),
+          books,
           bookFormData: {
             bookTitle: "",
             author: "",
             pages: ""
-          }
+          },
+          bookToBeEdited: undefined
         };
       });
     }
@@ -167,6 +209,7 @@ export default class LibraryApp extends Component {
           handleBookFormSubmit={this.handleBookFormSubmit}
           bookFormOpen={this.state.bookFormOpen}
           clearBookForm={this.clearBookForm}
+          bookToBeEdited={this.state.bookToBeEdited}
         />
         <DeleteBookModal
           bookToBeDeleted={this.state.bookToBeDeleted}
